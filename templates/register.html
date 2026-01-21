@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    body {
+        background-color: #FFF8E7;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .register-container {
+        background: #FFF8E7;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)
+    }
+
+    .form-control {
+        background-color: white;
+    }
+
+    .btn-mustard {
+        background-color: #ffdb58;
+        border: none;
+        color: black;
+    }
+
+    .btn-mustard:hover {
+        background-color: #e6c94c;
+    }
+
+    .is-valid {
+        border-color: #198754 !important;
+    }
+
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    .input-group-text {
+        cursor: pointer;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<div class="register-container">
+    <h2 class="mb-4">Register</h2>
+    <form method="POST">
+        <a href="https://tynesidecinema.co.uk/about-us/support-us/" target="_blank" class="btn btn-primary">
+  Support Tyneside Cinema
+</a>
+        <div class="mb-3">
+            <label class="form-label">First Name</label>
+            <input type="text" name="first_name" class="form-control" required value="{{ form.first_name or '' }}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Last Name</label>
+            <input type="text" name="last_name" class="form-control" required value="{{ form.last_name or '' }}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required value="{{ form.email or '' }}">
+        </div>
+        <div class="mb-3 position-relative">
+            <label class="form-label">Password</label>
+            <div class="input-group">
+                <input type="password" id="password" name="password" class="form-control" required>
+                <span class="input-group-text" id="toggle-password">👁️</span>
+            </div>
+            <small class="form-text text-muted">Must be at least 8 characters long and include letters and numbers.</small>
+            <ul class="text-muted small mb-3">
+    <li id="length" class="text-danger">✖ At least 8 characters</li>
+    <li id="uppercase" class="text-danger">✖ Contains an uppercase letter</li>
+    <li id="lowercase" class="text-danger">✖ Contains a lowercase letter</li>
+    <li id="number" class="text-danger">✖ Contains a number</li>
+    <li id="special" class="text-danger">✖ Contains a special character</li>
+</ul>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Phone Number</label>
+            <input type="text" name="phone" class="form-control" placeholder="07*********" value="{{ form.phone or '' }}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Date of Birth</label>
+            <input type="date" id="dob" name="dob" class="form-control" max="{{ max_dob }}" required>
+        </div>
+        <button type="submit" class="btn btn-mustard">Register</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+// Date picker
+flatpickr("#dob", {
+    dateFormat: "d/m/Y",
+    maxDate: "{{ max_dob }}",
+    allowInput: true
+});
+
+// Live password validation
+const passwordInput = document.getElementById('password');
+const toggleButton = document.getElementById('toggle-password');
+
+const lengthCheck = document.getElementById('length');
+const upperCheck = document.getElementById('uppercase');
+const lowerCheck = document.getElementById('lowercase');
+const numberCheck = document.getElementById('number');
+const specialCheck = document.getElementById('special');
+
+passwordInput.addEventListener('input', () => {
+    const val = passwordInput.value;
+    let valid = true;
+
+    if (val.length >= 8) {
+        lengthCheck.textContent = "✔ At least 8 characters";
+        lengthCheck.classList.replace('text-danger', 'text-success');
+    } else {
+        lengthCheck.textContent = "✖ At least 8 characters";
+        lengthCheck.classList.replace('text-success', 'text-danger');
+        valid = false;
+    }
+
+    if (/[A-Z]/.test(val)) {
+        upperCheck.textContent = "✔ Contains an uppercase letter";
+        upperCheck.classList.replace('text-danger', 'text-success');
+    } else {
+        upperCheck.textContent = "✖ Contains an uppercase letter";
+        upperCheck.classList.replace('text-success', 'text-danger');
+        valid = false;
+    }
+
+    if (/[a-z]/.test(val)) {
+        lowerCheck.textContent = "✔ Contains a lowercase letter";
+        lowerCheck.classList.replace('text-danger', 'text-success');
+    } else {
+        lowerCheck.textContent = "✖ Contains a lowercase letter";
+        lowerCheck.classList.replace('text-success', 'text-danger');
+        valid = false;
+    }
+
+    if (/\d/.test(val)) {
+        numberCheck.textContent = "✔ Contains a number";
+        numberCheck.classList.replace('text-danger', 'text-success');
+    } else {
+        numberCheck.textContent = "✖ Contains a number";
+        numberCheck.classList.replace('text-success', 'text-danger');
+        valid = false;
+    }
+
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(val)) {
+        specialCheck.textContent = "✔ Contains a special character";
+        specialCheck.classList.replace('text-danger', 'text-success');
+    } else {
+        specialCheck.textContent = "✖ Contains a special character";
+        specialCheck.classList.replace('text-success', 'text-danger');
+        valid = false;
+    }
+
+    passwordInput.classList.remove('is-valid', 'is-invalid');
+    passwordInput.classList.add(valid ? 'is-valid' : 'is-invalid');
+});
+
+toggleButton.addEventListener('click', () => {
+    const type = passwordInput.getAttribute('type');
+    passwordInput.setAttribute('type', type === 'password' ? 'text' : 'password');
+    toggleButton.textContent = type === 'password' ? '🙈' : '👁️';
+});
+</script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    body {
+        background-color: #FFF8E7;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .register-container {
+        background: #FFF8E7;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)
+    }
+
+    .form-control {
+        background-color: white;
+    }
+
+    .btn-mustard {
+        background-color: #ffdb58;
+        border: none;
+        color: black;
+    }
+
+    .btn-mustard:hover {
+        background-color: #e6c94c;
+    }
+</style>
+<div class="register-container">
+<h2>Login</h2>
+<form method="POST">
+    <div class="mb-3">
+        <label>Email</label>
+        <input type="email" name="email" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Password</label>
+        <input type="password" name="password" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-mustard w-100">Login</button>
+    <p class="mt-2">Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+</form>
+</div>
+{% endblock %}
